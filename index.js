@@ -1,4 +1,4 @@
-function create_domain_card(domain_name,img_src='')
+function create_domain_card(domain_name,img_src='') //returns a 'card' div for the domain. Use for domains -> sorting, linked list etc.
 {
     let card=document.createElement('div');
     card.classList.add('domaincard');
