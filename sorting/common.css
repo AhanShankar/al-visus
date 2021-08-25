@@ -20,12 +20,22 @@ body::-webkit-scrollbar {
   color: white;
 }
 #container {
-  margin-top: 50vh;
-  margin-left: 50vw;
+  margin-left:10vh;
+  margin-top: 10vh;
   /* display: flex; */
-  width: 400px;
-  height: 400px;
+  width: 70vw;
+  height: 50vh;
+  /* overflow: auto; */
 }
-.bar {
-  fill: rgb(28, 207, 207);
+.rect {
+  fill: rgb(31 122 46);
+}
+svg {
+  height: auto;
+  width: auto;
+}
+g text {
+  font-weight: 900;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  fill: white;
 }
