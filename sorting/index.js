@@ -87,6 +87,6 @@ function append_barchart(arr, x_dim, y_dim) {
       });
 }
 let x_dim = 1200, //width of graph/chart
-  y_dim = 500; //hieght of graph/chart
+  y_dim = 500; //height of graph/chart
 let arr = generate_array(30, 0, 350);
 append_barchart(arr, x_dim, y_dim);

@@ -20,12 +20,10 @@ body::-webkit-scrollbar {
   color: white;
 }
 #container {
-  margin-left:10vh;
+  margin-left: 10vh;
   margin-top: 10vh;
-  /* display: flex; */
   width: 70vw;
   height: 50vh;
-  /* overflow: auto; */
 }
 .rect {
   fill: rgb(31 122 46);
