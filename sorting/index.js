@@ -1,5 +1,5 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
-
+import {bubble_sort} from './sorting_functions.js'
 document.body.insertBefore(
   get_sorting_navbar(),
   document.body.firstElementChild
@@ -63,22 +63,24 @@ function append_barchart(arr, x_dim, y_dim) {
     .enter()
     .append("g")
     .classed("bar", true)
-    .attr("id", (d, i) => "bar" + i);
+    .attr("id", (d, i) => "bar" + i)
+    .attr("transform", (d, i) => `translate(${xscale(i)},${yscale(d)})`);
+  // .attr("x", (d, i) => xscale(i))
+  // .attr("y", (d) =>y_dim)
 
-  
   chart
-    .append("rect") 
+    .append("rect")
     .style("height", (d) => y_dim - yscale(d))
-    .attr("width", xscale.bandwidth())
-    .attr("x", (d, i) => xscale(i))
-    .attr("y", (d) => yscale(d))
-    .classed("rect", true);
+    .classed("rect", true)
+    .attr("width", xscale.bandwidth());
+  // .attr("x", (d, i) => xscale(i))
+  // .attr("y", (d) => y_dim-margin.bottom);
 
   if (arr.length <= 20)
     chart
       .append("text") //text
-      .attr("x", (d, i) => xscale(i) + xscale.bandwidth() / 2)
-      .attr("y", (d) => yscale(d) + 10)
+      .attr("x", (d, i) =>  xscale.bandwidth() / 2)
+      .attr("y", (d) => 10)
       .attr("dy", "0.35em")
       .attr("dominant-baseline", "middle")
       .attr("text-anchor", "middle")
@@ -88,5 +90,14 @@ function append_barchart(arr, x_dim, y_dim) {
 }
 let x_dim = 1200, //width of graph/chart
   y_dim = 500; //height of graph/chart
-let arr = generate_array(30, 0, 350);
+let arr = generate_array(50, 0, 350);
 append_barchart(arr, x_dim, y_dim);
+
+let durationTime = 500;
+
+let test=Array.from(document.querySelectorAll('.bar')).map((value,index)=>
+{
+  return{value:arr[index],node:value}
+});
+
+bubble_sort(test);
