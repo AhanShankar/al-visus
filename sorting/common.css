@@ -1,5 +1,5 @@
 body {
-  background: #424242;
+  background: #aed3ba;
   overflow: auto;
   margin: 0;
 }
@@ -8,7 +8,7 @@ body::-webkit-scrollbar {
 }
 #topnavbar {
   height: 7vmin;
-  background-color: #a30d0d;
+  background-color: #f69696;
   width: 100%;
   display: flex;
   align-items: center;
@@ -26,7 +26,7 @@ body::-webkit-scrollbar {
   height: 50vh;
 }
 .rect {
-  fill: rgb(31 122 46);
+  fill: rgb(198 223 202);
 }
 svg {
   height: auto;
@@ -35,5 +35,5 @@ svg {
 g text {
   font-weight: 900;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  fill: white;
+  fill: rgb(107, 107, 107);
 }

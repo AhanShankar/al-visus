@@ -1,5 +1,5 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
-import {bubble_sort} from './sorting_functions.js'
+import { bubble_sort } from "./sorting_functions.js";
 document.body.insertBefore(
   get_sorting_navbar(),
   document.body.firstElementChild
@@ -79,7 +79,7 @@ function append_barchart(arr, x_dim, y_dim) {
   if (arr.length <= 20)
     chart
       .append("text") //text
-      .attr("x", (d, i) =>  xscale.bandwidth() / 2)
+      .attr("x", (d, i) => xscale.bandwidth() / 2)
       .attr("y", (d) => 10)
       .attr("dy", "0.35em")
       .attr("dominant-baseline", "middle")
@@ -88,16 +88,18 @@ function append_barchart(arr, x_dim, y_dim) {
         if (d > 15) return d; // values less than 15 are too small to contain text
       });
 }
+
 let x_dim = 1200, //width of graph/chart
   y_dim = 500; //height of graph/chart
-let arr = generate_array(50, 0, 350);
+
+let arr = generate_array(20, 0, 300);
 append_barchart(arr, x_dim, y_dim);
 
-let durationTime = 500;
-
-let test=Array.from(document.querySelectorAll('.bar')).map((value,index)=>
-{
-  return{value:arr[index],node:value}
+//test is an object array which can bind nodes and int values together
+//in the form of {value,node}
+let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
+  return { value: arr[index], node: value };
 });
 
-bubble_sort(test);
+//  bubble_sort(test, 500);
+  
