@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Mulish&display=swap");
 body {
-  background: #424242;
+  background:#CDB599FF;
 }
 header {
   margin-top: 5vmin;
   font-size: 10vmin;
-  color: #ed336f;
+  color: #5B84B1FF;
   font-family: "Mulish", sans-serif;
   margin-left: 10vmin;
 }
