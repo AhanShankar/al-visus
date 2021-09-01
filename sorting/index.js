@@ -97,9 +97,16 @@ append_barchart(arr, x_dim, y_dim);
 
 //test is an object array which can bind nodes and int values together
 //in the form of {value,node}
+
 let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
   return { value: arr[index], node: value };
 });
 
-//  bubble_sort(test, 500);
-  
+// animations_array contains all the animations we need to perform
+//in order, as functions
+
+let animations_array = bubble_sort(test, 500);
+
+for (const animation of animations_array) {
+  await animation();
+}
