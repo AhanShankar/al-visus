@@ -1,9 +1,60 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
 import { bubble_sort } from "./sorting_functions.js";
+import * as code_tracer from "./codetracer.js";
 document.body.insertBefore(
   get_sorting_navbar(),
   document.body.firstElementChild
 ); //inserts top navigation bar
+const container = document.getElementById("container");
+const content = document.getElementById("content");
+let is_playing = false;
+
+let x_dim = 1200, //width of graph/chart
+  y_dim = 500; //height of graph/chart
+
+let arr = generate_array(10, 0, 300);
+append_barchart(arr, x_dim, y_dim);
+container.appendChild(get_animation_control_buttons());
+const code_trace_div = code_tracer.get_panel();
+
+content.appendChild(code_trace_div);
+
+//test is an object array which can bind nodes and int values together
+//in the form of {value,node}
+
+let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
+  return { value: arr[index], node: value };
+});
+
+// animations_array contains all the animations we need to perform
+//in order, as functions
+
+let animations_array = bubble_sort(test, 500);
+let animation_index = 0;
+async function start_animation() {
+  for (
+    ;
+    is_playing && animation_index < animations_array.length;
+    animation_index++
+  ) {
+    await animations_array[animation_index]();
+  }
+}
+function get_animation_control_buttons() {
+  const playbutton = document.createElement("button");
+  playbutton.id = "play_button";
+  playbutton.textContent = "Play";
+
+  playbutton.onclick = function () {
+    is_playing = !is_playing;
+    if (is_playing) {
+      playbutton.textContent = "Pause";
+      start_animation();
+    } else playbutton.textContent = "Play";
+  };
+
+  return playbutton;
+}
 
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
@@ -65,16 +116,12 @@ function append_barchart(arr, x_dim, y_dim) {
     .classed("bar", true)
     .attr("id", (d, i) => "bar" + i)
     .attr("transform", (d, i) => `translate(${xscale(i)},${yscale(d)})`);
-  // .attr("x", (d, i) => xscale(i))
-  // .attr("y", (d) =>y_dim)
 
   chart
     .append("rect")
     .style("height", (d) => y_dim - yscale(d))
     .classed("rect", true)
     .attr("width", xscale.bandwidth());
-  // .attr("x", (d, i) => xscale(i))
-  // .attr("y", (d) => y_dim-margin.bottom);
 
   if (arr.length <= 20)
     chart
@@ -87,26 +134,4 @@ function append_barchart(arr, x_dim, y_dim) {
       .text((d) => {
         if (d > 15) return d; // values less than 15 are too small to contain text
       });
-}
-
-let x_dim = 1200, //width of graph/chart
-  y_dim = 500; //height of graph/chart
-
-let arr = generate_array(20, 0, 300);
-append_barchart(arr, x_dim, y_dim);
-
-//test is an object array which can bind nodes and int values together
-//in the form of {value,node}
-
-let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
-  return { value: arr[index], node: value };
-});
-
-// animations_array contains all the animations we need to perform
-//in order, as functions
-
-let animations_array = bubble_sort(test, 500);
-
-for (const animation of animations_array) {
-  await animation();
 }
