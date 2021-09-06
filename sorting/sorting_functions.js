@@ -1,7 +1,10 @@
 const ARRAY_SORTED_COLOR = "orange";
 const ELEMENT_HIGHLIGHT_COLOR = "#3a78b5";
 const DEFAULT_ELEMENT_COLOR = "rgb(198 223 202)";
-import { populate_psuedocode } from "./codetracer.js";
+const PSUEDOCDE_HIGHLIGHT_COLOR = "black";
+const POSITIVE_ASSERTION_COLOR = "green";
+const NEGATIVE_ASSERION_COLOR = "red";
+import { populate_psuedocode, indent } from "./codetracer.js";
 function swap_bars(node1, node2, time_duration) {
   const bar1 = d3.select(node1);
   const bar2 = d3.select(node2);
@@ -32,11 +35,26 @@ function swap_bars(node1, node2, time_duration) {
       .end(),
   ]);
 }
-
+// this functions chains two animations together, first the coloring
+//then decoloring(background:none)
+function highlight_psuedocode(node, duration = 100, color) {
+  const psuedocode = d3.select(node);
+  return psuedocode
+    .transition()
+    .duration(duration)
+    .style("background", color)
+    .end()
+    .then(() =>
+      psuedocode
+        .transition()
+        .duration(duration)
+        .style("background", "none")
+        .end()
+    );
+}
 function bubble_sort(arr, time_duration) {
   let animations_array = [];
-  // let already_sorted_arr = arr.sort((a, b) => a - b);
-  let psuedocode_arr = [
+  let psuedocode_text_arr = [
     "do",
     "swapped = false",
     "for i = 1 to indexOfLastUnsortedElement-1",
@@ -45,10 +63,32 @@ function bubble_sort(arr, time_duration) {
     "swapped = true",
     "while swapped",
   ];
-  populate_psuedocode(psuedocode_arr);
+  populate_psuedocode(psuedocode_text_arr);
+  
+  //indents psuedocode on div, takes an array of indentation values
+  //and an optional factor to indent by 
+  indent([0, 1, 1, 2, 3, 2, 0], 2);
+  let psuedocode_node_arr = Array.from(
+    document.querySelectorAll(".psuedocode")
+  );
   let swap_occured;
+
   for (let i = 0; i < arr.length; i++) {
     swap_occured = false;
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[1],
+        time_duration,
+        NEGATIVE_ASSERION_COLOR
+      );
+    });
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[2],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     for (let j = 0; j < arr.length - i - 1; j++) {
       //temp variables required to pass by value, not reference
 
@@ -56,8 +96,21 @@ function bubble_sort(arr, time_duration) {
         temp2 = arr[j + 1];
 
       //push highlighting animation
-
       if (arr[j].value > arr[j + 1].value) {
+        animations_array.push(() => {
+          return highlight_psuedocode(
+            psuedocode_node_arr[3],
+            time_duration,
+            POSITIVE_ASSERTION_COLOR
+          );
+        });
+        animations_array.push(() => {
+          return highlight_psuedocode(
+            psuedocode_node_arr[4],
+            time_duration,
+            PSUEDOCDE_HIGHLIGHT_COLOR
+          );
+        });
         animations_array.push(() => {
           return d3
             .select(temp1.node.firstElementChild)
@@ -72,7 +125,13 @@ function bubble_sort(arr, time_duration) {
         animations_array.push(() => {
           return swap_bars(temp1.node, temp2.node, time_duration);
         });
-
+        animations_array.push(() => {
+          return highlight_psuedocode(
+            psuedocode_node_arr[5],
+            time_duration,
+            PSUEDOCDE_HIGHLIGHT_COLOR
+          );
+        });
         //swap actual array
 
         let temp = arr[j];
@@ -80,6 +139,13 @@ function bubble_sort(arr, time_duration) {
         arr[j + 1] = temp;
         swap_occured = true;
       } else {
+        animations_array.push(() => {
+          return highlight_psuedocode(
+            psuedocode_node_arr[3],
+            time_duration,
+            NEGATIVE_ASSERION_COLOR
+          );
+        });
         animations_array.push(() => {
           // console.log(j + " " + i+" "+swap_occured);
           return d3

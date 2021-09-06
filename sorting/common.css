@@ -61,7 +61,9 @@ g text {
   justify-content: space-evenly;
 }
 .psuedocode {
+  padding: 5%;
   font-size: 2vmin;
   color: white;
   font-family: monospace;
+  border-radius: 2vmin;
 }
