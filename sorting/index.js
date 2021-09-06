@@ -29,7 +29,7 @@ let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
 // animations_array contains all the animations we need to perform
 //in order, as functions
 
-let animations_array = bubble_sort(test, 500);
+let animations_array = bubble_sort(test, 200);
 let animation_index = 0;
 async function start_animation() {
   for (

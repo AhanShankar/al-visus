@@ -47,60 +47,64 @@ function bubble_sort(arr, time_duration) {
   ];
   populate_psuedocode(psuedocode_arr);
   let swap_occured;
-  do {
+  for (let i = 0; i < arr.length; i++) {
     swap_occured = false;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length - i - 1; j++) {
-        //temp variables required to pass by value, not reference
+    for (let j = 0; j < arr.length - i - 1; j++) {
+      //temp variables required to pass by value, not reference
 
-        let temp1 = arr[j],
-          temp2 = arr[j + 1];
+      let temp1 = arr[j],
+        temp2 = arr[j + 1];
 
-        //push highlighting animation
+      //push highlighting animation
 
-        if (arr[j].value > arr[j + 1].value) {
-          animations_array.push(() => {
-            temp1.node.firstElementChild.style["fill"] =
-              ELEMENT_HIGHLIGHT_COLOR;
-          });
+      if (arr[j].value > arr[j + 1].value) {
+        animations_array.push(() => {
+          return d3
+            .select(temp1.node.firstElementChild)
+            .transition()
+            .duration(time_duration)
+            .style("fill", ELEMENT_HIGHLIGHT_COLOR)
+            .end();
+        });
 
-          // push swapping animation
+        // push swapping animation
 
-          animations_array.push(() => {
-            return swap_bars(temp1.node, temp2.node, time_duration);
-          });
+        animations_array.push(() => {
+          return swap_bars(temp1.node, temp2.node, time_duration);
+        });
 
-          //swap actual array
+        //swap actual array
 
-          let temp = arr[j];
-          arr[j] = arr[j + 1];
-          arr[j + 1] = temp;
-          swap_occured = true;
-
-          //following code doesnt work
-
-          // if (arr[j+1] === already_sorted_arr[j + 1]) {
-          //   console.log('ok');
-          //   animations_array.push(()=>{
-          //   return d3.select(temp2.node.firstElementChild).transition().style("fill",
-          //     ELEMENT_HIGHLIGHT_COLOR).end();
-          // });}
-        } else {
-          animations_array.push(() => {
-            temp1.node.firstElementChild.style["fill"] = DEFAULT_ELEMENT_COLOR;
-          });
-        }
+        let temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+        swap_occured = true;
+      } else {
+        animations_array.push(() => {
+          // console.log(j + " " + i+" "+swap_occured);
+          return d3
+            .select(temp1.node.firstElementChild)
+            .transition()
+            .duration(0)
+            .style("fill", DEFAULT_ELEMENT_COLOR)
+            .end();
+        });
       }
     }
-  } while (swap_occured);
+    if (!swap_occured) break;
+  }
   if (!swap_occured) {
-    
     //at this point array is sorted, so push sort complete animation
-
     animations_array.push(() => {
-      d3.selectAll(".rect").style("fill", ARRAY_SORTED_COLOR);
+      return d3
+        .selectAll(".rect")
+        .transition()
+        .duration(1000)
+        .style("fill", ARRAY_SORTED_COLOR)
+        .end();
     });
   }
+
   return animations_array;
 }
 export { bubble_sort };

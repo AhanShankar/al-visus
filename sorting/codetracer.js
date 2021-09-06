@@ -13,9 +13,7 @@ function get_psuedocode_div(psuedocode) {
 
 //this takes an array of strings, which will be different for every sorting algorithm
 function populate_psuedocode(arr) {
-  console.log(arr);
   for (const psuedocode of arr) {
-    console.log(psuedocode);
     code_tracer_div.appendChild(get_psuedocode_div(psuedocode));
   }
 }
