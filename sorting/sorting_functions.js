@@ -1,9 +1,9 @@
-const ARRAY_SORTED_COLOR = "orange";
-const ELEMENT_HIGHLIGHT_COLOR = "#3a78b5";
-const DEFAULT_ELEMENT_COLOR = "rgb(198 223 202)";
-const PSUEDOCDE_HIGHLIGHT_COLOR = "black";
-const POSITIVE_ASSERTION_COLOR = "green";
-const NEGATIVE_ASSERION_COLOR = "red";
+const ARRAY_SORTED_COLOR = "#ED944D";
+const ELEMENT_HIGHLIGHT_COLOR = "#6577B3";
+const DEFAULT_ELEMENT_COLOR = "#e4c765";
+const PSUEDOCDE_HIGHLIGHT_COLOR = "#E3CD81FF";
+const POSITIVE_ASSERTION_COLOR = "#48A14D";
+const NEGATIVE_ASSERION_COLOR = "#B33F40";
 import { populate_psuedocode, indent } from "./codetracer.js";
 function swap_bars(node1, node2, time_duration) {
   const bar1 = d3.select(node1);
