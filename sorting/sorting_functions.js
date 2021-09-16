@@ -5,6 +5,14 @@ const PSUEDOCDE_HIGHLIGHT_COLOR = "#E3CD81FF";
 const POSITIVE_ASSERTION_COLOR = "#48A14D";
 const NEGATIVE_ASSERION_COLOR = "#B33F40";
 import { populate_psuedocode, indent } from "./codetracer.js";
+function get_location(node, char = "") {
+  let temp = d3.select(node).attr("transform");
+  let x_location = +temp.slice(10, temp.indexOf(","));
+  let y_location = +temp.slice(temp.indexOf(",") + 1, -1);
+  if (char === "x") return +x_location;
+  if (char === "y") return +y_location;
+  return { x: x_location, y: y_location };
+}
 function swap_bars(node1, node2, time_duration) {
   const bar1 = d3.select(node1);
   const bar2 = d3.select(node2);
@@ -52,6 +60,71 @@ function highlight_psuedocode(node, duration = 100, color) {
         .end()
     );
 }
+function fill_in_range(start_index, end_index, color, time_duration) {
+  return d3
+    .selectAll(
+      `svg g:nth-child(n+${start_index + 1}):nth-child(-n+${
+        end_index + 1
+      }) rect`
+    )
+    .transition()
+    .style("fill", color)
+    .duration(time_duration)
+    .end();
+}
+function translate_in_range(arr, time_duration, factor) {
+  let transitions_array = [];
+  ``;
+  for (let i = 0; i < arr.length; i++) {
+    const temp_node = arr[i].node;
+    let temp = d3.select(temp_node).attr("transform");
+    let x_location = temp.slice(9, temp.indexOf(","));
+    let y_location = +temp.slice(temp.indexOf(",") + 1, -1) - 15 * factor;
+    transitions_array.push(
+      d3
+        .select(temp_node)
+        .transition()
+        .duration(time_duration)
+        .attr("transform", "translate" + x_location + "," + y_location + ")")
+        .end()
+    );
+  }
+  return Promise.all(transitions_array);
+}
+function translate_into_sorted(arr, color, time_duration, factor) {
+  const sorted_array = [...arr].sort((element1, element2) => {
+    return element1.value - element2.value;
+  });
+  let p = [];
+  for (let index = 0; index < arr.length; index++) {
+    const sorted_index = sorted_array.findIndex((object) =>
+      object.node.isEqualNode(arr[index].node)
+    );
+    p.push(
+      Promise.all([
+        d3
+          .select(arr[index].node)
+          .transition()
+          .duration(time_duration)
+          .attr(
+            "transform",
+            "translate" +
+              `(${get_location(arr[sorted_index].node, "x")},${
+                get_location(arr[index].node, "y") - 15 * factor
+              })`
+          )
+          .style("fill", color)
+          .end(),
+        d3
+          .select(arr[index].node.firstElementChild)
+          .transition()
+          .duration(time_duration)
+          .style("fill", color),
+      ])
+    );
+  }
+  return Promise.all(p);
+}
 function bubble_sort(arr, time_duration) {
   let animations_array = [];
   let psuedocode_text_arr = [
@@ -64,9 +137,9 @@ function bubble_sort(arr, time_duration) {
     "while swapped",
   ];
   populate_psuedocode(psuedocode_text_arr);
-  
+
   //indents psuedocode on div, takes an array of indentation values
-  //and an optional factor to indent by 
+  //and an optional factor to indent by
   indent([0, 1, 1, 2, 3, 2, 0], 2);
   let psuedocode_node_arr = Array.from(
     document.querySelectorAll(".psuedocode")
@@ -147,7 +220,6 @@ function bubble_sort(arr, time_duration) {
           );
         });
         animations_array.push(() => {
-          // console.log(j + " " + i+" "+swap_occured);
           return d3
             .select(temp1.node.firstElementChild)
             .transition()
@@ -173,4 +245,130 @@ function bubble_sort(arr, time_duration) {
 
   return animations_array;
 }
-export { bubble_sort };
+function insertion_sort(arr, time_duration) {
+  let animations_array = [];
+  let psuedocode_text_arr = [
+    "for i = 1 to n",
+    "key = arr [i] ",
+    "if subarray behind key is unsorted",
+    "put the key element in its right place",
+  ];
+  populate_psuedocode(psuedocode_text_arr);
+
+  //indents psuedocode on div, takes an array of indentation values
+  //and an optional factor to indent by
+  let psuedocode_node_arr = Array.from(
+    document.querySelectorAll(".psuedocode")
+  );
+  for (let i = 1; i < arr.length; i++) {
+    let j = i;
+    let temp = arr[j];
+    animations_array.push(() => {
+      return d3
+        .select(temp.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", ELEMENT_HIGHLIGHT_COLOR)
+        .end();
+    });
+    while (j > 0 && arr[j].value < arr[j - 1].value) {
+      let temp = arr[j],
+        temp2 = arr[j - 1];
+      animations_array.push(() => {
+        return swap_bars(temp.node, temp2.node, time_duration);
+      });
+
+      arr[j] = arr[j - 1];
+      arr[j - 1] = temp;
+      j -= 1;
+    }
+    animations_array.push(() => {
+      return d3
+        .select(temp.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", DEFAULT_ELEMENT_COLOR)
+        .end();
+    });
+  }
+
+  return animations_array;
+}
+function Merge_sort(arr, time_duration) {
+  const color_array = [
+    "#E4C765",
+    "#C8AE58",
+    "#AB954C",
+    "#8E7C3F",
+    "#726433",
+    "#554B26",
+    "#393219",
+    "#1C190D",
+  ];
+  let animations_array = [];
+  function merge(arr, l, m, r) {
+    let n1 = m - l + 1;
+    let n2 = r - m;
+
+    let L = new Array(n1);
+    let R = new Array(n2);
+    for (let i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (let j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+    let i = 0;
+
+    let j = 0;
+
+    let k = l;
+    while (i < n1 && j < n2) {
+      if (L[i].value <= R[j].value) {
+        arr[k] = L[i];
+        i++;
+      } else {
+        arr[k] = R[j];
+        j++;
+      }
+      k++;
+    }
+    while (i < n1) {
+      arr[k] = L[i];
+      i++;
+      k++;
+    }
+    while (j < n2) {
+      arr[k] = R[j];
+      j++;
+      k++;
+    }
+  }
+  function mergeSort(arr, l, r, stack_count = 1) {
+    if (l >= r) {
+      return; //returns recursively
+    }
+    let temp_arr = [...arr.slice(l, r + 1)];
+    animations_array.push(() => {
+      return Promise.all([
+        fill_in_range(l, r, color_array[stack_count], time_duration),
+        translate_in_range(temp_arr, time_duration, stack_count),
+      ]);
+    });
+
+    let m = l + parseInt((r - l) / 2);
+    mergeSort(arr, l, m, stack_count + 1);
+
+    mergeSort(arr, m + 1, r, stack_count + 1);
+    temp_arr = [...arr.slice(l, r + 1)];
+    merge(arr, l, m, r);
+    animations_array.push(() => {
+      return translate_into_sorted(
+        temp_arr,
+        color_array[stack_count - 1],
+        time_duration,
+        -stack_count
+      );
+    });
+  }
+  mergeSort(arr, 0, arr.length - 1);
+  return animations_array;
+}
+const SortingFunctions= [ bubble_sort, insertion_sort, Merge_sort ];
+export{SortingFunctions};
