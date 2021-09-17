@@ -1,26 +1,50 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
-import { bubble_sort,insertion_sort } from "./sorting_functions.js";
+import { SortingFunctions } from "./sorting_functions.js";
 import * as code_tracer from "./codetracer.js";
-document.body.insertBefore(
-  get_sorting_navbar(),
-  document.body.firstElementChild
-); //inserts top navigation bar
+const ARRAY_SIZE = 20;
+const nav_bar = get_sorting_navbar();
+document.body.insertBefore(nav_bar, document.body.firstElementChild); //inserts top navigation bar
 const container = document.getElementById("container");
 const content = document.getElementById("content");
 const create_array_button = get_createarray_button();
 let is_playing = false;
-let input_field = array_input();
 
+let input_field = array_input();
+let current_sort = SortingFunctions[0];
 let x_dim = 1200, //width of graph/chart
   y_dim = 500; //height of graph/chart
 
-let arr = generate_array(10, 0, 300);
+let arr = generate_array(ARRAY_SIZE, 10, 300);
 append_barchart(arr, x_dim, y_dim);
 container.appendChild(input_field);
 container.appendChild(create_array_button);
 container.appendChild(get_animation_control_buttons());
 const code_trace_div = code_tracer.get_panel();
-
+let animations_array = [];
+for (
+  let sorting_option = nav_bar.firstChild, i = 0;
+  sorting_option !== null;
+  sorting_option = sorting_option.nextSibling, i++
+) {
+  sorting_option.onclick = function () {
+    is_playing=false;
+    animation_index=0;
+    arr = generate_array(ARRAY_SIZE, 10, 300);
+    while (container.firstElementChild)
+      container.removeChild(container.firstElementChild);
+    while (code_trace_div.firstElementChild)
+      code_trace_div.removeChild(code_trace_div.firstElementChild);
+    append_barchart(arr, x_dim, y_dim);
+    container.appendChild(get_animation_control_buttons());
+    current_sort = SortingFunctions[i];
+    animations_array = current_sort(
+      Array.from(document.querySelectorAll(".bar")).map((value, index) => {
+        return { value: arr[index], node: value };
+      }),
+      120
+    );
+  };
+}
 content.appendChild(code_trace_div);
 
 //test is an object array which can bind nodes and int values together
@@ -29,11 +53,11 @@ content.appendChild(code_trace_div);
 let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
   return { value: arr[index], node: value };
 });
-
 // animations_array contains all the animations we need to perform
 //in order, as functions
 
-let animations_array = insertion_sort(test, 250);
+animations_array = current_sort(test, 120);
+
 let animation_index = 0;
 async function start_animation() {
   for (
