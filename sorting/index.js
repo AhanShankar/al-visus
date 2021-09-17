@@ -1,5 +1,5 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
-import { bubble_sort } from "./sorting_functions.js";
+import { bubble_sort,insertion_sort } from "./sorting_functions.js";
 import * as code_tracer from "./codetracer.js";
 document.body.insertBefore(
   get_sorting_navbar(),
@@ -7,13 +7,17 @@ document.body.insertBefore(
 ); //inserts top navigation bar
 const container = document.getElementById("container");
 const content = document.getElementById("content");
+const create_array_button = get_createarray_button();
 let is_playing = false;
+let input_field = array_input();
 
 let x_dim = 1200, //width of graph/chart
   y_dim = 500; //height of graph/chart
 
 let arr = generate_array(10, 0, 300);
 append_barchart(arr, x_dim, y_dim);
+container.appendChild(input_field);
+container.appendChild(create_array_button);
 container.appendChild(get_animation_control_buttons());
 const code_trace_div = code_tracer.get_panel();
 
@@ -29,7 +33,7 @@ let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
 // animations_array contains all the animations we need to perform
 //in order, as functions
 
-let animations_array = bubble_sort(test, 250);
+let animations_array = insertion_sort(test, 250);
 let animation_index = 0;
 async function start_animation() {
   for (
@@ -40,17 +44,61 @@ async function start_animation() {
     await animations_array[animation_index]();
   }
 }
+
+function array_input() {
+    const input = document.createElement("input");
+    input.id = "input_arr";
+    input.setAttribute("type", "text");
+    return input;
+}
+
+function get_createarray_button() {
+  const createbutton = document.createElement("button");
+  createbutton.id = "createbutton";
+  createbutton.textContent = "Create";
+
+  return createbutton;
+}
+
+create_array_button.onclick = function () {
+  let str = input_field.value;
+  let string_array = str.split(',');
+  string_array = string_array.map( (string) => {
+    return +string;
+  });
+  arr = string_array;
+  animation_index = 0;
+  is_playing = false;
+  while(container.firstElementChild){
+    container.removeChild(container.firstElementChild)
+  }
+  append_barchart(arr,x_dim,y_dim);
+  container.appendChild(input_field);
+  container.appendChild(create_array_button);
+  container.appendChild(get_animation_control_buttons());
+  animations_array = insertion_sort(Array.from(document.querySelectorAll(".bar")).map((value, index) => {
+    return { value: arr[index], node: value };
+  }),500)
+  console.log(string_array);
+};
+
 function get_animation_control_buttons() {
   const playbutton = document.createElement("button");
   playbutton.id = "play_button";
-  playbutton.textContent = "Play";
+  playbutton.textContent = "⏸";
 
   playbutton.onclick = function () {
     is_playing = !is_playing;
     if (is_playing) {
-      playbutton.textContent = "Pause";
+      playbutton.textContent = "▶";
       start_animation();
-    } else playbutton.textContent = "Play";
+    } else playbutton.textContent = "⏸";
+    // if (e.which == 32) { 
+    //   if (!is_playing){ 
+    //   playbutton.textContent = "▶"; 
+    //   start_animation(); } 
+    //   else playbutton.textContent = "⏸"; 
+    //   }      
   };
 
   return playbutton;

@@ -37,7 +37,7 @@ function swap_bars(node1, node2, time_duration) {
 }
 // this functions chains two animations together, first the coloring
 //then decoloring(background:none)
-function highlight_psuedocode(node, duration = 100, color) {
+function highlight_psuedocode(node, duration = 200, color) {
   const psuedocode = d3.select(node);
   return psuedocode
     .transition()
@@ -174,3 +174,99 @@ function bubble_sort(arr, time_duration) {
   return animations_array;
 }
 export { bubble_sort };
+
+// insertion sort //
+
+function insertion_sort(arr, time_duration) {
+  let animations_array = [];
+  let psuedocode_text_arr = [
+    "for i = 1 to n",
+    "key = arr [i] ",
+    "if subarray behind key is unsorted",
+    "put the key element in its right place",
+  ];
+  populate_psuedocode(psuedocode_text_arr);
+ 
+  //indents psuedocode on div, takes an array of indentation values
+  //and an optional factor to indent by
+  let psuedocode_node_arr = Array.from(
+    document.querySelectorAll(".psuedocode")
+  );
+  for (let i = 1; i < arr.length; i++) {
+    let j = i;
+    let temp=arr[j];
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[1],
+        time_duration,
+        NEGATIVE_ASSERION_COLOR
+      );
+    });
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[2],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
+    animations_array.push(() => {
+      return d3
+        .select(temp.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", ELEMENT_HIGHLIGHT_COLOR)
+        .end();
+    });
+    while (j > 0 && arr[j].value < arr[j - 1].value) {
+      let temp = arr[j],
+        temp2 = arr[j - 1];
+        animations_array.push(() => {
+          return highlight_psuedocode(
+            psuedocode_node_arr[3],
+            time_duration,
+            POSITIVE_ASSERTION_COLOR
+          );
+        });
+      animations_array.push(() => {
+        return swap_bars(temp.node, temp2.node, time_duration);
+      });
+ 
+      arr[j] = arr[j - 1];
+      arr[j - 1] = temp;
+      j -= 1;
+    }
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[2],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[4],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
+    animations_array.push(() => {
+      return d3
+        .select(temp.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", DEFAULT_ELEMENT_COLOR)
+        .end();
+    });
+  }
+  animations_array.push(() => {
+    return d3
+      .selectAll(".rect")
+      .transition()
+      .duration(1000)
+      .style("fill", ARRAY_SORTED_COLOR)
+      .end();
+  });
+ 
+  return animations_array;
+}
+export { insertion_sort };
