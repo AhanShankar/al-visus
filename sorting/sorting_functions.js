@@ -16,30 +16,20 @@ function get_location(node, char = "") {
 function swap_bars(node1, node2, time_duration) {
   const bar1 = d3.select(node1);
   const bar2 = d3.select(node2);
-  const location1 = bar1.attr("transform");
-  const location2 = bar2.attr("transform");
+  const bar1_location = get_location(node1);
+  const bar2_location = get_location(node2);
 
   return Promise.all([
     bar1
       .transition()
       .duration(time_duration)
-      .attr(
-        "transform",
-        "translate" +
-          location2.slice(9, location2.indexOf(",")) +
-          location1.slice(location1.indexOf(","))
-      )
+      .attr("transform", `translate(${bar2_location.x},${bar1_location.y})`)
       .end(),
 
     bar2
       .transition()
       .duration(time_duration)
-      .attr(
-        "transform",
-        "translate" +
-          location1.slice(9, location1.indexOf(",")) +
-          location2.slice(location2.indexOf(","))
-      )
+      .attr("transform", `translate(${bar1_location.x},${bar2_location.y})`)
       .end(),
   ]);
 }
@@ -74,18 +64,18 @@ function fill_in_range(start_index, end_index, color, time_duration) {
 }
 function translate_in_range(arr, time_duration, factor) {
   let transitions_array = [];
-  ``;
   for (let i = 0; i < arr.length; i++) {
     const temp_node = arr[i].node;
-    let temp = d3.select(temp_node).attr("transform");
-    let x_location = temp.slice(9, temp.indexOf(","));
-    let y_location = +temp.slice(temp.indexOf(",") + 1, -1) - 15 * factor;
+    let location = get_location(temp_node);
     transitions_array.push(
       d3
         .select(temp_node)
         .transition()
         .duration(time_duration)
-        .attr("transform", "translate" + x_location + "," + y_location + ")")
+        .attr(
+          "transform",
+          `translate(${location.x},${location.y - 15 * factor})`
+        )
         .end()
     );
   }
@@ -264,7 +254,7 @@ function insertion_sort(arr, time_duration) {
   for (let i = 1; i < arr.length; i++) {
     let j = i;
 
-    let temp=arr[j];
+    let temp = arr[j];
     animations_array.push(() => {
       return highlight_psuedocode(
         psuedocode_node_arr[1],
@@ -292,17 +282,16 @@ function insertion_sort(arr, time_duration) {
       let temp = arr[j],
         temp2 = arr[j - 1];
 
-        animations_array.push(() => {
-          return highlight_psuedocode(
-            psuedocode_node_arr[3],
-            time_duration,
-            POSITIVE_ASSERTION_COLOR
-          );
-        });
+      animations_array.push(() => {
+        return highlight_psuedocode(
+          psuedocode_node_arr[3],
+          time_duration,
+          POSITIVE_ASSERTION_COLOR
+        );
+      });
       animations_array.push(() => {
         return swap_bars(temp.node, temp2.node, time_duration);
       });
- 
 
       arr[j] = arr[j - 1];
       arr[j - 1] = temp;
@@ -323,7 +312,6 @@ function insertion_sort(arr, time_duration) {
       );
     });
     animations_array.push(() => {
-
       return d3
         .select(temp.node.firstElementChild)
         .transition()
@@ -340,7 +328,7 @@ function insertion_sort(arr, time_duration) {
       .style("fill", ARRAY_SORTED_COLOR)
       .end();
   });
- 
+
   return animations_array;
 }
 function Merge_sort(arr, time_duration) {
@@ -419,5 +407,5 @@ function Merge_sort(arr, time_duration) {
   mergeSort(arr, 0, arr.length - 1);
   return animations_array;
 }
-const SortingFunctions= [ bubble_sort, insertion_sort, Merge_sort ];
-export{SortingFunctions};
+const SortingFunctions = [bubble_sort, insertion_sort, Merge_sort];
+export { SortingFunctions };

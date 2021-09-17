@@ -2,24 +2,29 @@ import { get_sorting_navbar } from "./sorting_navbar.js";
 import { SortingFunctions } from "./sorting_functions.js";
 import * as code_tracer from "./codetracer.js";
 const ARRAY_SIZE = 20;
+const ARRAY_MIN_ELEMENT = 20;
+const ARRAY_MAX_ELEMENT = 250;
+const ANIMATION_DURATION = 300;
 const nav_bar = get_sorting_navbar();
-document.body.insertBefore(nav_bar, document.body.firstElementChild); //inserts top navigation bar
 const container = document.getElementById("container");
 const content = document.getElementById("content");
+const code_trace_div = code_tracer.get_panel();
 const create_array_button = get_createarray_button();
-let is_playing = false;
 
+document.body.insertBefore(nav_bar, document.body.firstElementChild); //inserts top navigation bar
+
+let is_playing = false;
 let input_field = array_input();
 let current_sort = SortingFunctions[0];
 let x_dim = 1200, //width of graph/chart
   y_dim = 500; //height of graph/chart
+let arr = generate_array(ARRAY_SIZE, ARRAY_MIN_ELEMENT, ARRAY_MAX_ELEMENT);
 
-let arr = generate_array(ARRAY_SIZE, 10, 300);
 append_barchart(arr, x_dim, y_dim);
+container.appendChild(get_animation_control_buttons());
 container.appendChild(input_field);
 container.appendChild(create_array_button);
-container.appendChild(get_animation_control_buttons());
-const code_trace_div = code_tracer.get_panel();
+
 let animations_array = [];
 for (
   let sorting_option = nav_bar.firstChild, i = 0;
@@ -27,22 +32,20 @@ for (
   sorting_option = sorting_option.nextSibling, i++
 ) {
   sorting_option.onclick = function () {
-    is_playing=false;
-    animation_index=0;
-    arr = generate_array(ARRAY_SIZE, 10, 300);
-    while (container.firstElementChild)
-      container.removeChild(container.firstElementChild);
-    while (code_trace_div.firstElementChild)
-      code_trace_div.removeChild(code_trace_div.firstElementChild);
+    is_playing = false;
+    animation_index = 0;
+    arr = generate_array(ARRAY_SIZE, ARRAY_MIN_ELEMENT, ARRAY_MAX_ELEMENT);
+
+    removeAllChildren(container);
+    removeAllChildren(code_trace_div);
+
     append_barchart(arr, x_dim, y_dim);
     container.appendChild(get_animation_control_buttons());
+    container.appendChild(input_field);
+    container.appendChild(create_array_button);
+
     current_sort = SortingFunctions[i];
-    animations_array = current_sort(
-      Array.from(document.querySelectorAll(".bar")).map((value, index) => {
-        return { value: arr[index], node: value };
-      }),
-      120
-    );
+    animations_array = current_sort(create_Ob_array(arr), ANIMATION_DURATION);
   };
 }
 content.appendChild(code_trace_div);
@@ -50,30 +53,33 @@ content.appendChild(code_trace_div);
 //test is an object array which can bind nodes and int values together
 //in the form of {value,node}
 
-let test = Array.from(document.querySelectorAll(".bar")).map((value, index) => {
-  return { value: arr[index], node: value };
-});
+let test = create_Ob_array(arr);
 // animations_array contains all the animations we need to perform
 //in order, as functions
 
-animations_array = current_sort(test, 120);
+animations_array = current_sort(test, ANIMATION_DURATION);
 
 let animation_index = 0;
+let isanimationcomplete = true;
 async function start_animation() {
   for (
     ;
-    is_playing && animation_index < animations_array.length;
+    is_playing &&
+    isanimationcomplete &&
+    animation_index < animations_array.length;
     animation_index++
   ) {
+    isanimationcomplete = false;
     await animations_array[animation_index]();
+    isanimationcomplete = true;
   }
 }
 
 function array_input() {
-    const input = document.createElement("input");
-    input.id = "input_arr";
-    input.setAttribute("type", "text");
-    return input;
+  const input = document.createElement("input");
+  input.id = "input_arr";
+  input.setAttribute("type", "text");
+  return input;
 }
 
 function get_createarray_button() {
@@ -86,24 +92,22 @@ function get_createarray_button() {
 
 create_array_button.onclick = function () {
   let str = input_field.value;
-  let string_array = str.split(',');
-  string_array = string_array.map( (string) => {
+  let input_array = str.split(",");
+  input_array = input_array.map((string) => {
     return +string;
   });
-  arr = string_array;
+  arr = input_array;
   animation_index = 0;
   is_playing = false;
-  while(container.firstElementChild){
-    container.removeChild(container.firstElementChild)
-  }
-  append_barchart(arr,x_dim,y_dim);
+
+  removeAllChildren(container);
+  removeAllChildren(code_trace_div);
+
+  append_barchart(arr, x_dim, y_dim);
+  container.appendChild(get_animation_control_buttons());
   container.appendChild(input_field);
   container.appendChild(create_array_button);
-  container.appendChild(get_animation_control_buttons());
-  animations_array = insertion_sort(Array.from(document.querySelectorAll(".bar")).map((value, index) => {
-    return { value: arr[index], node: value };
-  }),500)
-  console.log(string_array);
+  animations_array = current_sort(create_Ob_array(arr), ANIMATION_DURATION);
 };
 
 function get_animation_control_buttons() {
@@ -117,12 +121,6 @@ function get_animation_control_buttons() {
       playbutton.textContent = "▶";
       start_animation();
     } else playbutton.textContent = "⏸";
-    // if (e.which == 32) { 
-    //   if (!is_playing){ 
-    //   playbutton.textContent = "▶"; 
-    //   start_animation(); } 
-    //   else playbutton.textContent = "⏸"; 
-    //   }      
   };
 
   return playbutton;
@@ -207,3 +205,37 @@ function append_barchart(arr, x_dim, y_dim) {
         if (d > 15) return d; // values less than 15 are too small to contain text
       });
 }
+function removeAllChildren(element) {
+  while (element.firstElementChild)
+    element.removeChild(element.firstElementChild);
+}
+function create_Ob_array(array) {
+  return Array.from(document.querySelectorAll(".bar")).map(
+    (bar_node, index) => {
+      return { value: array[index], node: bar_node };
+    }
+  );
+}
+// window.onkeydown = function(e) {
+//   return ev.keyCode !== 32 && ev.key !== " ";
+// }
+window.addEventListener("keydown", function (e) {
+  if (e.keyCode == 32 && e.target == document.body) {
+    e.preventDefault();
+    if (is_playing) is_playing = false;
+    else {
+      is_playing = true;
+      start_animation();
+    }
+  }
+});
+window.addEventListener("keydown", async function (e) {
+  if (e.keyCode == 39) {
+    is_playing = false;
+    if (isanimationcomplete) {
+      isanimationcomplete = false;
+      await animations_array[animation_index++]();
+      isanimationcomplete = true;
+    }
+  }
+});
