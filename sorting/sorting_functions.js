@@ -1,6 +1,7 @@
 const ARRAY_SORTED_COLOR = "#ED944D";
 const ELEMENT_HIGHLIGHT_COLOR = "#6577B3";
 const DEFAULT_ELEMENT_COLOR = "#e4c765";
+const QUICKSORT_PIVOT_COLOR = "yellow";
 const PSUEDOCDE_HIGHLIGHT_COLOR = "#E3CD81FF";
 const POSITIVE_ASSERTION_COLOR = "#48A14D";
 const NEGATIVE_ASSERION_COLOR = "#B33F40";
@@ -326,6 +327,7 @@ function insertion_sort(arr, time_duration) {
     "put the key element in its right place",
   ];
   populate_psuedocode(psuedocode_text_arr);
+  indent([0, 1, 1, 2], 3);
 
   //indents psuedocode on div, takes an array of indentation values
   //and an optional factor to indent by
@@ -487,6 +489,93 @@ function Merge_sort(arr, time_duration) {
     });
   }
   mergeSort(arr, 0, arr.length - 1);
+  animations_array.push(() => {
+    return d3
+      .selectAll(".rect")
+      .transition()
+      .duration(1000)
+      .style("fill", ARRAY_SORTED_COLOR)
+      .end();
+  });
+  return animations_array;
+}
+function quick_sort(arr, time_duration) {
+  const animations_array = [];
+  function partition(arr, start, end) {
+    const pivot_obj = arr[end];
+    let pivotIndex = start;
+    animations_array.push(() => {
+      return d3
+        .select(pivot_obj.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", QUICKSORT_PIVOT_COLOR)
+        .end();
+    });
+    let pivotIndex_temp;
+    for (let i = start; i < end; i++) {
+      pivotIndex_temp = pivotIndex;
+      const temp = arr[i];
+      let pivot_temp = arr[pivotIndex];
+      animations_array.push(() => {
+        return d3
+          .select(temp.node.firstElementChild)
+          .transition()
+          .duration(time_duration)
+          .style("fill", ELEMENT_HIGHLIGHT_COLOR)
+          .end();
+      });
+      if (temp.value < pivot_obj.value) {
+        if (i !== pivotIndex)
+          //error if i==pivotIndex_temp
+          animations_array.push(() => {
+            return swap_bars(temp.node, pivot_temp.node, time_duration);
+          });
+        [arr[i], arr[pivotIndex]] = [arr[pivotIndex], arr[i]]; //swap
+        pivotIndex++;
+      }
+      animations_array.push(() => {
+        return d3
+          .select(temp.node.firstElementChild)
+          .transition()
+          .duration(time_duration)
+          .style("fill", DEFAULT_ELEMENT_COLOR)
+          .end();
+      });
+    }
+    let temp_node = arr[pivotIndex];
+    animations_array.push(() => {
+      return swap_bars(temp_node.node, pivot_obj.node, time_duration);
+    });
+    [arr[pivotIndex], arr[end]] = [arr[end], arr[pivotIndex]]; //swap
+    animations_array.push(() => {
+      return d3
+        .select(pivot_obj.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", DEFAULT_ELEMENT_COLOR)
+        .end();
+    });
+
+    return pivotIndex;
+  }
+  function quickSortRecursive(arr, start, end) {
+    if (start >= end) {
+      return;
+    }
+    let index = partition(arr, start, end);
+    quickSortRecursive(arr, start, index - 1); //left half
+    quickSortRecursive(arr, index + 1, end); //right half
+  }
+  quickSortRecursive(arr, 0, arr.length - 1);
+  animations_array.push(() => {
+    return d3
+      .selectAll(".rect")
+      .transition()
+      .duration(1000)
+      .style("fill", ARRAY_SORTED_COLOR)
+      .end();
+  });
   return animations_array;
 }
 const SortingFunctions = [bubble_sort, insertion_sort, Merge_sort, selection_sort];
