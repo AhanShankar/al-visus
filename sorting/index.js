@@ -1,10 +1,10 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
 import { SortingFunctions } from "./sorting_functions.js";
 import * as code_tracer from "./codetracer.js";
-const ARRAY_SIZE = 20;
+const ARRAY_SIZE = 30;
 const ARRAY_MIN_ELEMENT = 20;
 const ARRAY_MAX_ELEMENT = 250;
-const ANIMATION_DURATION = 300;
+const ANIMATION_DURATION = 10;
 const nav_bar = get_sorting_navbar();
 const container = document.getElementById("container");
 const content = document.getElementById("content");
@@ -19,6 +19,7 @@ let current_sort = SortingFunctions[0];
 let x_dim = 1200, //width of graph/chart
   y_dim = 500; //height of graph/chart
 let arr = generate_array(ARRAY_SIZE, ARRAY_MIN_ELEMENT, ARRAY_MAX_ELEMENT);
+// let arr=[20,50,20,10,70,53,40];
 
 append_barchart(arr, x_dim, y_dim);
 container.appendChild(get_animation_control_buttons());
@@ -133,6 +134,7 @@ function generate_array(arr_size, range_min, range_max) {
   let arr = [];
   for (let i = 0; i < arr_size; i++)
     arr.push(getRandomArbitrary(range_min, range_max) | 0);
+  // return [20, 40, 30, 30, 50, 70, 10, 40];
   return arr;
 }
 
@@ -185,7 +187,9 @@ function append_barchart(arr, x_dim, y_dim) {
     .append("g")
     .classed("bar", true)
     .attr("id", (d, i) => "bar" + i)
-    .attr("transform", (d, i) => `translate(${xscale(i)},${yscale(d)})`);
+    .attr("transform", (d, i) => {
+      return `translate(${xscale(i)},${yscale(d)})`;
+    });
 
   chart
     .append("rect")
@@ -193,7 +197,7 @@ function append_barchart(arr, x_dim, y_dim) {
     .classed("rect", true)
     .attr("width", xscale.bandwidth());
 
-  if (arr.length <= 20)
+  if (arr.length <= 40)
     chart
       .append("text") //text
       .attr("x", (d, i) => xscale.bandwidth() / 2)
@@ -216,10 +220,8 @@ function create_Ob_array(array) {
     }
   );
 }
-// window.onkeydown = function(e) {
-//   return ev.keyCode !== 32 && ev.key !== " ";
-// }
 window.addEventListener("keydown", function (e) {
+  //spacebar controls
   if (e.keyCode == 32 && e.target == document.body) {
     e.preventDefault();
     if (is_playing) is_playing = false;

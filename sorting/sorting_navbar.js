@@ -12,6 +12,8 @@ function get_sorting_navbar() {
   top_navbar.appendChild(create_navbar_options("Bubble Sort"));
   top_navbar.appendChild(create_navbar_options("Insertion Sort"));
   top_navbar.appendChild(create_navbar_options("Merge Sort"));
+  top_navbar.appendChild(create_navbar_options("Quick Sort"));
+
   return top_navbar;
 }
 export { get_sorting_navbar };
