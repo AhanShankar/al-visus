@@ -53,8 +53,7 @@ function highlight_psuedocode(node, duration = 200, color) {
 function fill_in_range(start_index, end_index, color, time_duration) {
   return d3
     .selectAll(
-      `svg g:nth-child(n+${start_index + 1}):nth-child(-n+${
-        end_index + 1
+      `svg g:nth-child(n+${start_index + 1}):nth-child(-n+${end_index + 1
       }) rect`
     )
     .transition()
@@ -99,9 +98,8 @@ function translate_into_sorted(arr, color, time_duration, factor) {
           .attr(
             "transform",
             "translate" +
-              `(${get_location(arr[sorted_index].node, "x")},${
-                get_location(arr[index].node, "y") - 15 * factor
-              })`
+            `(${get_location(arr[sorted_index].node, "x")},${get_location(arr[index].node, "y") - 15 * factor
+            })`
           )
           .style("fill", color)
           .end(),
@@ -236,7 +234,90 @@ function bubble_sort(arr, time_duration) {
   return animations_array;
 }
 
+function selection_sort(arr, time_duration) {
+  let animations_array = [];
+  let psuedocode_text_arr = [
+    "for i=0 to length(Arr)",
+    "Minimum_element  = Arr[0]",
+    "for each unsorted element:",
+    "if element < Minimum_element",
+    "element = New_minimum",
+    "swap (Minimum_element, first unsorted position)",
+  ];
+  populate_psuedocode(psuedocode_text_arr);
+  indent([0, 1, 1, 2, 1, 1], 4);
+
+  //indents psuedocode on div, takes an array of indentation values
+  //and an optional factor to indent by
+  let psuedocode_node_arr = Array.from(
+    document.querySelectorAll(".psuedocode")
+  );
+
+  for (let i = 0; i <= arr.length - 1; i++) {
+    // find the index of the smallest element
+    let smallestIdx = i;
+    let temp1 = arr[i];
+    animations_array.push(() => {
+      return d3
+        .select(temp1.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", ELEMENT_HIGHLIGHT_COLOR)
+        .end();
+    });
+
+    for (let j = i + 1; j <= arr.length - 1; j++) {
+
+      if (arr[j].value < arr[smallestIdx].value) {
+        smallestIdx = j
+        let temp2 = arr[j]
+        animations_array.push(() => {
+          return d3
+            .select(temp2.node.firstElementChild)
+            .transition()
+            .duration(time_duration)
+            .style("fill", ELEMENT_HIGHLIGHT_COLOR)
+            .end();
+        });
+      }
+    }
+    
+
+    // if current iteration element isn't smallest swap it
+    if (arr[i].value > arr[smallestIdx].value) {
+      let temp2 = arr[smallestIdx];
+      animations_array.push(() => {
+        return swap_bars(temp1.node, temp2.node, time_duration);
+      });
+      let temp = arr[i]
+      arr[i] = arr[smallestIdx]
+      arr[smallestIdx] = temp
+    }
+    animations_array.push(() => {
+      return d3
+        .select(temp1.node.firstElementChild)
+        .transition()
+        .duration(time_duration)
+        .style("fill", DEFAULT_ELEMENT_COLOR)
+        .end();
+    });
+  }
+  animations_array.push(() => {
+    return d3
+      .selectAll(".rect")
+      .transition()
+      .duration(1000)
+      .style("fill", ARRAY_SORTED_COLOR)
+      .end();
+  });
+
+  return animations_array;
+}
+
+
+
 function insertion_sort(arr, time_duration) {
+  ;
   let animations_array = [];
   let psuedocode_text_arr = [
     "for i = 1 to n",
@@ -331,6 +412,7 @@ function insertion_sort(arr, time_duration) {
 
   return animations_array;
 }
+
 function Merge_sort(arr, time_duration) {
   const color_array = [
     "#E4C765",
@@ -407,5 +489,5 @@ function Merge_sort(arr, time_duration) {
   mergeSort(arr, 0, arr.length - 1);
   return animations_array;
 }
-const SortingFunctions = [bubble_sort, insertion_sort, Merge_sort];
+const SortingFunctions = [bubble_sort, insertion_sort, Merge_sort, selection_sort];
 export { SortingFunctions };

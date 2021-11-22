@@ -1,10 +1,10 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
 import { SortingFunctions } from "./sorting_functions.js";
 import * as code_tracer from "./codetracer.js";
-const ARRAY_SIZE = 20;
+const ARRAY_SIZE = 100;
 const ARRAY_MIN_ELEMENT = 20;
 const ARRAY_MAX_ELEMENT = 250;
-const ANIMATION_DURATION = 300;
+const ANIMATION_DURATION = 50;
 const nav_bar = get_sorting_navbar();
 const container = document.getElementById("container");
 const content = document.getElementById("content");
@@ -133,7 +133,7 @@ function generate_array(arr_size, range_min, range_max) {
   let arr = [];
   for (let i = 0; i < arr_size; i++)
     arr.push(getRandomArbitrary(range_min, range_max) | 0);
-  return arr;
+   return arr;
 }
 
 function append_barchart(arr, x_dim, y_dim) {
@@ -216,9 +216,6 @@ function create_Ob_array(array) {
     }
   );
 }
-// window.onkeydown = function(e) {
-//   return ev.keyCode !== 32 && ev.key !== " ";
-// }
 window.addEventListener("keydown", function (e) {
   if (e.keyCode == 32 && e.target == document.body) {
     e.preventDefault();
