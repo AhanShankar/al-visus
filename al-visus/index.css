@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Mulish&display=swap");
+body {
+  background:#CDB599FF;
+}
+header {
+  margin-top: 5vmin;
+  font-size: 10vmin;
+  color: #5B84B1FF;
+  font-family: "Mulish", sans-serif;
+  margin-left: 10vmin;
+}
+#headersubtitle {
+  margin-left: 10vmin;
+  color: white;
+  font-family: sans-serif;
+}
+#container {
+  display: grid;
+  grid-template-columns: repeat(3.1fr);
+  grid-template-rows: repeat(3, 1fr);
+  margin: 10vmin 8vmin;
+  /* border: 1px solid black; */
+  padding: 5%;
+  /* background-color: #c8c8c8; */
+  background: inherit;
+  border-radius: 2%;
+}
+.domaincard {
+  height: 35vmin;
+  width: 40vmin;
+  background-color: rgb(13 103 102);
+  border-radius: 2%;
+  color: white;
+  font-size: 3vmin;
+  box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+}
+.domaincard:hover {
+  transform: scale(1.1);
+  transition: 0.5s;
+}
+.domaincard img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 1%;
+}
+.domaincard div {
+  /* margin-top: 3%;
+    margin-left: 3%; */
+  margin: auto;
+  margin-left: 5%;
+  font-family: "Mulish";
+}
