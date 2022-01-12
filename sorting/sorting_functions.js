@@ -58,7 +58,7 @@ function bubble_sort(arr, time_duration) {
 
         //push highlighting animation
 
-        if (arr[j].value > arr[j + 1].value) {
+        if (arr[j].value > arr[j + 1].value) { 
           animations_array.push(() => {
             temp1.node.firstElementChild.style["fill"] =
               ELEMENT_HIGHLIGHT_COLOR;
