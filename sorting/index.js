@@ -1,10 +1,10 @@
 import { get_sorting_navbar } from "./sorting_navbar.js";
 import { SortingFunctions } from "./sorting_functions.js";
 import * as code_tracer from "./codetracer.js";
-const ARRAY_SIZE = 30;
+const ARRAY_SIZE = 20;
 const ARRAY_MIN_ELEMENT = 20;
 const ARRAY_MAX_ELEMENT = 250;
-const ANIMATION_DURATION = 10;
+const ANIMATION_DURATION = 0;
 const nav_bar = get_sorting_navbar();
 const container = document.getElementById("container");
 const content = document.getElementById("content");

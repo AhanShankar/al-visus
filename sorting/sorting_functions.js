@@ -183,7 +183,7 @@ function bubble_sort(arr, time_duration)
             .style("fill", ELEMENT_HIGHLIGHT_COLOR)
             .end();
         });
-
+      }
         if (arr[j].value > arr[j + 1].value) { 
           animations_array.push(() => {
             temp1.node.firstElementChild.style["fill"] =
@@ -238,8 +238,8 @@ function bubble_sort(arr, time_duration)
     });
   }
 
-  return animations_array;
-}
+
+return animations_array;
 }
 
 function selection_sort(arr, time_duration) {
