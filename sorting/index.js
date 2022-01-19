@@ -135,6 +135,7 @@ function generate_array(arr_size, range_min, range_max) {
   for (let i = 0; i < arr_size; i++)
     arr.push(getRandomArbitrary(range_min, range_max) | 0);
    return arr;
+
 }
 
 function append_barchart(arr, x_dim, y_dim) {

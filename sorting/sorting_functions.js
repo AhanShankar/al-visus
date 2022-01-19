@@ -114,7 +114,9 @@ function translate_into_sorted(arr, color, time_duration, factor) {
   }
   return Promise.all(p);
 }
-function bubble_sort(arr, time_duration) {
+
+function bubble_sort(arr, time_duration) 
+{
   let animations_array = [];
   let psuedocode_text_arr = [
     "do",
@@ -182,7 +184,11 @@ function bubble_sort(arr, time_duration) {
             .end();
         });
 
-        // push swapping animation
+        if (arr[j].value > arr[j + 1].value) { 
+          animations_array.push(() => {
+            temp1.node.firstElementChild.style["fill"] =
+              ELEMENT_HIGHLIGHT_COLOR;
+          });
 
         animations_array.push(() => {
           return swap_bars(temp1.node, temp2.node, time_duration);
@@ -233,6 +239,7 @@ function bubble_sort(arr, time_duration) {
   }
 
   return animations_array;
+}
 }
 
 function selection_sort(arr, time_duration) {
