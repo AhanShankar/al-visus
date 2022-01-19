@@ -322,8 +322,6 @@ function selection_sort(arr, time_duration) {
   return animations_array;
 }
 
-
-
 function insertion_sort(arr, time_duration) {
   ;
   let animations_array = [];
@@ -422,7 +420,7 @@ function insertion_sort(arr, time_duration) {
   return animations_array;
 }
 
-function Merge_sort(arr, time_duration) {
+function Merge_sort(arr, time_duration) { 
   const color_array = [
     "#E4C765",
     "#C8AE58",
@@ -433,6 +431,18 @@ function Merge_sort(arr, time_duration) {
     "#393219",
     "#1C190D",
   ];
+  let psuedocode_text_arr = [
+    "if not single element array",
+    "Consider the right part of the last array division",
+    "Consider the left part of the last array division",
+    "Merge the sorted arrays"
+
+  ];
+  populate_psuedocode(psuedocode_text_arr);
+  indent([0,2,2], 2);
+  let psuedocode_node_arr = Array.from(
+    document.querySelectorAll(".psuedocode")
+  );
   let animations_array = [];
   function merge(arr, l, m, r) {
     let n1 = m - l + 1;
@@ -470,7 +480,24 @@ function Merge_sort(arr, time_duration) {
   }
   function mergeSort(arr, l, r, stack_count = 1) {
     if (l >= r) {
+      animations_array.push(() => {
+        return highlight_psuedocode(
+          psuedocode_node_arr[0],
+          time_duration,
+          NEGATIVE_ASSERION_COLOR
+        );
+      });
       return; //returns recursively
+    }
+    else
+    {
+      animations_array.push(() => {
+        return highlight_psuedocode(
+          psuedocode_node_arr[0],
+          time_duration,
+          POSITIVE_ASSERTION_COLOR
+        );
+      });
     }
     let temp_arr = [...arr.slice(l, r + 1)];
     animations_array.push(() => {
@@ -481,10 +508,30 @@ function Merge_sort(arr, time_duration) {
     });
 
     let m = l + parseInt((r - l) / 2);
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[1],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     mergeSort(arr, l, m, stack_count + 1);
-
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[2],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     mergeSort(arr, m + 1, r, stack_count + 1);
     temp_arr = [...arr.slice(l, r + 1)];
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[3],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     merge(arr, l, m, r);
     animations_array.push(() => {
       return translate_into_sorted(
@@ -508,6 +555,21 @@ function Merge_sort(arr, time_duration) {
 }
 function quick_sort(arr, time_duration) {
   const animations_array = [];
+  let psuedocode_text_arr = [
+    "if not single element array",
+    "Select last element as pivot",
+    "Partition subarray to make pivot the middle element",
+    "Perform quicksort on left subarray",
+    "Perform quicksort on right subarray"
+  ];
+  populate_psuedocode(psuedocode_text_arr);
+
+  //indents psuedocode on div, takes an array of indentation values
+  //and an optional factor to indent by
+  indent([0,2,2,2,2], 2);
+  let psuedocode_node_arr = Array.from(
+    document.querySelectorAll(".psuedocode")
+  );
   function partition(arr, start, end) {
     const pivot_obj = arr[end];
     let pivotIndex = start;
@@ -568,10 +630,55 @@ function quick_sort(arr, time_duration) {
   }
   function quickSortRecursive(arr, start, end) {
     if (start >= end) {
+      animations_array.push(() => {
+        return highlight_psuedocode(
+          psuedocode_node_arr[0],
+          time_duration,
+          NEGATIVE_ASSERION_COLOR
+        );
+      });
       return;
     }
+    else
+    {
+      animations_array.push(() => {
+        return highlight_psuedocode(
+          psuedocode_node_arr[0],
+          time_duration,
+          POSITIVE_ASSERTION_COLOR
+        );
+      });
+    }
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[1],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[2],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     let index = partition(arr, start, end);
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[3],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     quickSortRecursive(arr, start, index - 1); //left half
+    animations_array.push(() => {
+      return highlight_psuedocode(
+        psuedocode_node_arr[4],
+        time_duration,
+        PSUEDOCDE_HIGHLIGHT_COLOR
+      );
+    });
     quickSortRecursive(arr, index + 1, end); //right half
   }
   quickSortRecursive(arr, 0, arr.length - 1);

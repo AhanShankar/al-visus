@@ -4,7 +4,7 @@ import * as code_tracer from "./codetracer.js";
 const ARRAY_SIZE = 20;
 const ARRAY_MIN_ELEMENT = 20;
 const ARRAY_MAX_ELEMENT = 250;
-const ANIMATION_DURATION = 0;
+const ANIMATION_DURATION = 100;
 const nav_bar = get_sorting_navbar();
 const container = document.getElementById("container");
 const content = document.getElementById("content");
