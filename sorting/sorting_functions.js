@@ -578,5 +578,5 @@ function quick_sort(arr, time_duration) {
   });
   return animations_array;
 }
-const SortingFunctions = [bubble_sort, insertion_sort, Merge_sort, selection_sort];
+const SortingFunctions = [bubble_sort, insertion_sort, Merge_sort, selection_sort,quick_sort];
 export { SortingFunctions };

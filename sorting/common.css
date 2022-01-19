@@ -58,7 +58,7 @@ g text {
   margin-right: 2vw;
   display: flex;
   flex-direction: column;
-  padding: 2vmin;
+  padding: 0.5vmin;
   justify-content: space-evenly;
 }
 .psuedocode {
@@ -70,6 +70,35 @@ g text {
 }
 
 
+#createbutton
+{
+  padding:0.3vw 1vw;
+  border:none;
+  border-radius: 0.2vw;
+  margin: 0.5vw;
+  color: rgb(228, 227, 227);
+  background-color: rgb(39, 194, 178);
+}
 #play_button
 {
+  width:5vw;
+  padding: 0.3vw;
+  margin-left:20%;
+  color: rgb(228, 227, 227);
+  border-radius: 0.2vw;
+  border:none;
+  background-color: rgb(39, 194, 178);
+}
+#input_arr
+{
+  border:none;
+  border-radius: 0.2vw;
+  padding: 0.3vw;
+  margin-left: 0.5vw;
+  background-color: rgb(145, 207, 207);
+}
+#input_arr:focus
+{
+  outline: none;
+  color: white;
 }

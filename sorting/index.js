@@ -22,9 +22,9 @@ let arr = generate_array(ARRAY_SIZE, ARRAY_MIN_ELEMENT, ARRAY_MAX_ELEMENT);
 // let arr=[20,50,20,10,70,53,40];
 
 append_barchart(arr, x_dim, y_dim);
-container.appendChild(get_animation_control_buttons());
 container.appendChild(input_field);
 container.appendChild(create_array_button);
+container.appendChild(get_animation_control_buttons());
 
 let animations_array = [];
 for (
@@ -41,9 +41,9 @@ for (
     removeAllChildren(code_trace_div);
 
     append_barchart(arr, x_dim, y_dim);
-    container.appendChild(get_animation_control_buttons());
     container.appendChild(input_field);
     container.appendChild(create_array_button);
+    container.appendChild(get_animation_control_buttons());
 
     current_sort = SortingFunctions[i];
     animations_array = current_sort(create_Ob_array(arr), ANIMATION_DURATION);
@@ -105,23 +105,23 @@ create_array_button.onclick = function () {
   removeAllChildren(code_trace_div);
 
   append_barchart(arr, x_dim, y_dim);
-  container.appendChild(get_animation_control_buttons());
   container.appendChild(input_field);
   container.appendChild(create_array_button);
+  container.appendChild(get_animation_control_buttons());
   animations_array = current_sort(create_Ob_array(arr), ANIMATION_DURATION);
 };
 
 function get_animation_control_buttons() {
   const playbutton = document.createElement("button");
   playbutton.id = "play_button";
-  playbutton.textContent = "⏸";
+  playbutton.textContent = "Pause";
 
   playbutton.onclick = function () {
     is_playing = !is_playing;
     if (is_playing) {
-      playbutton.textContent = "▶";
+      playbutton.textContent = "Play";
       start_animation();
-    } else playbutton.textContent = "⏸";
+    } else playbutton.textContent = "Pause";
   };
 
   return playbutton;
